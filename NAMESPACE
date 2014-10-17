@@ -1,0 +1,3 @@
+useDynLib(dyngame)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
