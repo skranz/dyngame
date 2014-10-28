@@ -11,11 +11,6 @@ new.sim = function(...) {
   return(sim) 
 }
 
-para.const = list(inc.type=c("det","poisson","unif"),
-                  sol.type=c("coll","mon","fb.w","fb.cs"))
-string.const.to.int.const(para.const,prefix="") # Generates integer const in uppercase
-FB.W
-
 # Quicker translation function
 xv.to.x = function(m,xvm) {
   return( (xvm[,1])*m$xv.dim[[2]]+xvm[,2]+1)
@@ -29,11 +24,11 @@ make.my.game = function(x.cap=10, K=10, x.inc=2, delta=0.5,inc.min=0,inc.max=2,
     copy.into.env(source=para)
   }
     
-  store.local.objects()                     
+                       
   # xv will be one state vector
   act.fun = function(xv,m=NULL) {
-    store.local.objects("act.fun")
-  	#restore.local.objects("act.fun");restore.local.objects("make.funs")
+    restore.point("act.fun")
+  	#restore.point("act.fun");restore.point("make.funs")
 		val = list(0:xv[1],0:xv[2])
 		lab = val
 		
@@ -46,8 +41,8 @@ make.my.game = function(x.cap=10, K=10, x.inc=2, delta=0.5,inc.min=0,inc.max=2,
   } 
 	
   g.fun = function(avm,xvm,m=NULL) {
-    store.local.objects("g.fun");
-  	#restore.local.objects("g.fun"); restore.local.objects("make.g.fun"); 
+    restore.point("g.fun");
+  	#restore.point("g.fun"); restore.point("make.g.fun"); 
   	
 		rownames(avm)=rownames(xvm)=NULL
   	
@@ -101,8 +96,7 @@ make.my.game = function(x.cap=10, K=10, x.inc=2, delta=0.5,inc.min=0,inc.max=2,
     
   # State transitions
   tau.fun = function(avm,xvm,m=NULL) {
-    store.local.objects("tau.fun")
-  	#restore.local.objects("tau.fun")
+  	#restore.point("tau.fun")
 
 		rownames(avm)=rownames(xvm)=NULL
   	tau = matrix(0,NROW(avm),m$nx)  	  	
@@ -153,245 +147,254 @@ make.my.game = function(x.cap=10, K=10, x.inc=2, delta=0.5,inc.min=0,inc.max=2,
 
 
 
+examples.dyn.cournot.water = function() {
+  # Parameters and their default values
+  STORE_OBJECTS = FALSE
+  NO.LABELS = FALSE
+  
+  
+  para.const = list(inc.type=c("det","poisson","unif"),
+                    sol.type=c("coll","mon","fb.w","fb.cs"))
+  string.const.to.int.const(para.const,prefix="") # Generates integer const in uppercase
+  FB.W
 
-# Parameters and their default values
-STORE_OBJECTS = !TRUE
-NO.LABELS = !TRUE
+  
+  Rprof(tmp <- "profile.out", memory.profiling=FALSE)
+  para     = list(delta=2/3,K=20,x.cap=20,x.inc=3,inc.min=3,inc.max=4,
+                  inc.type=UNIF,sol.type=COLL)
 
-Rprof(tmp <- "profile.out", memory.profiling=FALSE)
-para     = list(delta=2/3,K=20,x.cap=20,x.inc=3,inc.min=3,inc.max=4,
-                inc.type=UNIF,sol.type=COLL)
-copy.into.env(source=para)
-
-
-my.game = make.my.game(para=para)
-mc = init.game(my.game = my.game)
-
-Rprof()
-summaryRprof(tmp)
-
-# Collusive solution
-STORE_OBJECTS = !TRUE
-mc = solve.game(mc)  
-#print.sol(mc)
-
-
-m = clone(mc)
-
-par(mar=c(5,5,2,2))
-state.levelplot(mc,z=mc$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),
-                main="Prices under Collusion",
-                xlab="Reserves firm 1", ylab="Reserves firm 2",zlim=c(7,20),
-                reverse.colors=TRUE)
-
-state.levelplot(mc,z=mc$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),
-                main="Prices under Collusion",
-                xlab="Reserves firm 1", ylab="Reserves firm 2",zlim=c(8,20),
-                reverse.colors=TRUE,col.scheme = "grey")
-
-V = mc$sol.mat[,"v1"]+mc$sol.mat[,"v2"]
-state.levelplot(mc,z=V,arrows=FALSE,cuts=10,xrange=c(0,20),
-                main="Sum of punishment payoffs",
-                xlab="Reserves firm 1", ylab="Reserves firm 2",
-                reverse.colors=!TRUE,col.scheme = "grey")
-                
-V = mc$sol.mat[,"v1"]+mc$sol.mat[,"v2"]
-state.levelplot(mc,z=mc$sol.mat[,"v1"],arrows=FALSE,cuts=10,xrange=c(0,20),
-                main="Punishment payoffs player 1",
-                xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
-                reverse.colors=!TRUE,col.scheme = "grey")
-                
-                
-state.levelplot(mc,z=mc$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),
-                main="Preise unter Kollusion",
-                xlab="Ölreserven Firma 1", ylab="Ölreserven Firma 2",zlim=c(8,20),
-                reverse.colors=TRUE)
-                
-# Monopoly solution
-mon = clone(m)
-mon$integrated = TRUE
-mon = solve.game(mon,delta=delta)
-
-par(mar=c(5,5,2,0))
-state.levelplot(mon,z=mon$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),
-                main="Prices under Monopoly",zlim=c(8,20),
-                xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
-                reverse.colors=TRUE)
-                
-                
-V = mc$sol.mat[,"v1"]+mc$sol.mat[,"v2"]
-
-
-state.levelplot(mc,z=V,arrows=FALSE,cuts=10,xrange=c(0,20),main="Punishment Collusion",
-                xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
-                reverse.colors=TRUE)
-
-par(mar=c(5,5,2,2))
-                
-state.levelplot(mon,z="P",arrows=FALSE,cuts=10,xrange=c(0,20),main="Monopoly",
-                xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
-                reverse.colors=TRUE)
-                
-
-
-								
-STORE_OBJECTS = !TRUE
-NO.LABELS = TRUE
-options(error=traceback)
-
-
-para     = list(delta=0.9,eta=0.2,K=20,x.cap=10,x.inc=4,
-                inc.type=DET,sol.type=COLL)
-para.change = list(delta="",eta="",K="",x.cap="ax",x.inc="",
-                   inc.type=DET,sol.type=COLL)
-block = list(def = list(), 
-             val = list(sol.type = c(COLL,MON),
-                        x.inc = c(4)
-                    )) 
-STORE_OBJECTS = !TRUE
-sim = new.oil.sim(para.def=para, blocks=list(block), make.my.game=make.my.game)
-run.sim(sim,file.name="sim20.csv",append=TRUE)
-
-
-load.sim(sim)
-
-#save.sim(sim)
-
-
-for (i in 1:NROW(sim$mod.mat)) {
-  lab = paste("+",sim$mod.mat[i,"x.inc"],"eta=",sim$mod.mat[i,"eta"],
-              para.const$sol.type[sim$mod.mat[i,"sol.type"]],sep=" ")
-  sol.levelplot(sim$sol,sim$para.mat[i,],xyz=c("xv1","xv2","P"),
-          xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
-          main=paste("Prices",lab),xrange=c(0,Inf), reverse.colors=TRUE)
-}
-
-delta = 0.9
-eta = 0.2
-K = 40
-x.cap = 20
-
-
-funs = make.funs(K=K,x.max,eta=eta)
-#funs = make.funs() 
-xv.val = list(-1:x.cap,0:x.cap)
-                                        
-Rprof(tmp <- "profile.out", memory.profiling=FALSE)
-m = init.game(n=2, name="Embargo", symmetric = FALSE,nxv=2,
-              xv.val=xv.val, functions=funs)
-m$delta = delta
-Rprof()
-summaryRprof(tmp)
-STORE.OBJECTS=!TRUE
-
-                
-# First best solution
-mfb = clone(m)
-mfb$integrated = TRUE
-mfb$goal = "W"
-set.g.and.tau(mfb,recalc.g=TRUE)
-mfb = solve.game(mfb,delta=delta)
-print.sol(mfb)
-
-
-# Monopoly solution
-mon = clone(m)
-mon$integrated = TRUE
-mon = solve.game(mon,delta=delta)
-
-                
-state.levelplot(mon,z=get.Pae,arrows=!FALSE,cuts=10,xrange=c(0,20),main="Monopoly",
-                xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
-                reverse.colors=TRUE)
-
-			
-# Collusive solution
-mc = clone(m)
-mc = solve.game(mc,delta=delta)  
-print.sol(mc)
-
-get.average.discounted.prob(mc)
-
-
-STORE_OBJECTS = !TRUE
-
-par(mar=c(5,5,2,2))
-
-state.levelplot(mc,z=get.Pae,arrows=FALSE,cuts=10,xrange=c(0,20),main="Collusion",
-                xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
-                reverse.colors=TRUE)
-                
-state.levelplot(mon,z=get.Pae,arrows=FALSE,cuts=10,xrange=c(0,20),main="Monopoly",
-                xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
-                reverse.colors=TRUE)
-                
-state.levelplot(mfb,z=get.Pae,arrows=!FALSE,cuts=10,xrange=c(0,20),main="First Best",
-                xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
-                reverse.colors=TRUE)
-
-nm = 21
-eta.seq = seq(0.1,0.9,length=nm)
-#gamma.seq = c(0.1,0.3)
-delta = 0.8
-mmc = solve.multi.model(m=mc,delta = delta,par = list(eta=eta.seq))
-mmon = solve.multi.model(m=mon,delta = delta,par = list(eta=eta.seq))
-mmfb = solve.multi.model(m=mfb,delta = delta,par = list(eta=eta.seq))
-
-mmlist = list(c=mmc,m=mmon,fb=mmfb)
-
-# Also discount with eta
-
-
-
-
-for (imm in 1:3) {
-  for (im in 1:nm) {
-    eta = eta.seq[im]
-    m = mmlist[[imm]]$ms[[im]]
-    adprob = get.average.discounted.prob(m=m,delta=(1-eta)*delta)
-    m$extra.sol = adprob %*% m$extra.sol.current
-    #m$extra.sol = m$extra.sol.current *10
-    cols = 1:(NCOL(m$sol.mat)-NCOL(m$extra.sol))
-    m$sol.mat[,-cols] = m$extra.sol
+  copy.into.env(source=para)
+  
+  
+  my.game = make.my.game(para=para)
+  mc = init.game(my.game = my.game)
+  
+  Rprof()
+  summaryRprof(tmp)
+  
+  # Collusive solution
+  STORE_OBJECTS = FALSE
+  mc = solve.game(mc)  
+  print.sol(mc)
+  STORE_OBJECTS = TRUE
+  
+  m = clone(mc)
+  
+  par(mar=c(5,5,2,2))
+  state.levelplot(mc,z=mc$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),
+                  main="Prices under Collusion",
+                  xlab="Reserves firm 1", ylab="Reserves firm 2",zlim=c(7,20),
+                  reverse.colors=TRUE)
+  
+  state.levelplot(mc,z=mc$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),
+                  main="Prices under Collusion",
+                  xlab="Reserves firm 1", ylab="Reserves firm 2",zlim=c(8,20),
+                  reverse.colors=TRUE,col.scheme = "grey")
+  
+  V = mc$sol.mat[,"v1"]+mc$sol.mat[,"v2"]
+  state.levelplot(mc,z=V,arrows=FALSE,cuts=10,xrange=c(0,20),
+                  main="Sum of punishment payoffs",
+                  xlab="Reserves firm 1", ylab="Reserves firm 2",
+                  reverse.colors=!TRUE,col.scheme = "grey")
+                  
+  V = mc$sol.mat[,"v1"]+mc$sol.mat[,"v2"]
+  state.levelplot(mc,z=mc$sol.mat[,"v1"],arrows=FALSE,cuts=10,xrange=c(0,20),
+                  main="Punishment payoffs player 1",
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=!TRUE,col.scheme = "grey")
+                  
+                  
+  state.levelplot(mc,z=mc$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),
+                  main="Preise unter Kollusion",
+                  xlab="Ölreserven Firma 1", ylab="Ölreserven Firma 2",zlim=c(8,20),
+                  reverse.colors=TRUE)
+                  
+  # Monopoly solution
+  mon = clone(m)
+  mon$integrated = TRUE
+  mon = solve.game(mon,delta=delta)
+  
+  par(mar=c(5,5,2,0))
+  state.levelplot(mon,z=mon$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),
+                  main="Prices under Monopoly",zlim=c(8,20),
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=TRUE)
+                  
+                  
+  V = mc$sol.mat[,"v1"]+mc$sol.mat[,"v2"]
+  
+  
+  state.levelplot(mc,z=V,arrows=FALSE,cuts=10,xrange=c(0,20),main="Punishment Collusion",
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=TRUE)
+  
+  par(mar=c(5,5,2,2))
+                  
+  state.levelplot(mon,z="P",arrows=FALSE,cuts=10,xrange=c(0,20),main="Monopoly",
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=TRUE)
+                  
+  
+  
+  								
+  STORE_OBJECTS = !TRUE
+  NO.LABELS = TRUE
+  options(error=traceback)
+  
+  
+  para     = list(delta=0.9,eta=0.2,K=20,x.cap=10,x.inc=4,
+                  inc.type=DET,sol.type=COLL)
+  para.change = list(delta="",eta="",K="",x.cap="ax",x.inc="",
+                     inc.type=DET,sol.type=COLL)
+  block = list(def = list(), 
+               val = list(sol.type = c(COLL,MON),
+                          x.inc = c(4)
+                      )) 
+  STORE_OBJECTS = !TRUE
+  sim = new.oil.sim(para.def=para, blocks=list(block), make.my.game=make.my.game)
+  run.sim(sim,file.name="sim20.csv",append=TRUE)
+  
+  
+  load.sim(sim)
+  
+  #save.sim(sim)
+  
+  
+  for (i in 1:NROW(sim$mod.mat)) {
+    lab = paste("+",sim$mod.mat[i,"x.inc"],"eta=",sim$mod.mat[i,"eta"],
+                para.const$sol.type[sim$mod.mat[i,"sol.type"]],sep=" ")
+    sol.levelplot(sim$sol,sim$para.mat[i,],xyz=c("xv1","xv2","P"),
+            xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+            main=paste("Prices",lab),xrange=c(0,Inf), reverse.colors=TRUE)
   }
-  update.multimod.sol(mmlist[[imm]])
+  
+  delta = 0.9
+  eta = 0.2
+  K = 40
+  x.cap = 20
+  
+  
+  funs = make.funs(K=K,x.max,eta=eta)
+  #funs = make.funs() 
+  xv.val = list(-1:x.cap,0:x.cap)
+                                          
+  Rprof(tmp <- "profile.out", memory.profiling=FALSE)
+  m = init.game(n=2, name="Embargo", symmetric = FALSE,nxv=2,
+                xv.val=xv.val, functions=funs)
+  m$delta = delta
+  Rprof()
+  summaryRprof(tmp)
+  STORE.OBJECTS=!TRUE
+  
+                  
+  # First best solution
+  mfb = clone(m)
+  mfb$integrated = TRUE
+  mfb$goal = "W"
+  set.g.and.tau(mfb,recalc.g=TRUE)
+  mfb = solve.game(mfb,delta=delta)
+  print.sol(mfb)
+  
+  
+  # Monopoly solution
+  mon = clone(m)
+  mon$integrated = TRUE
+  mon = solve.game(mon,delta=delta)
+  
+                  
+  state.levelplot(mon,z=get.Pae,arrows=!FALSE,cuts=10,xrange=c(0,20),main="Monopoly",
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=TRUE)
+  
+  			
+  # Collusive solution
+  mc = clone(m)
+  mc = solve.game(mc,delta=delta)  
+  print.sol(mc)
+  
+  get.average.discounted.prob(mc)
+  
+  
+  STORE_OBJECTS = !TRUE
+  
+  par(mar=c(5,5,2,2))
+  
+  state.levelplot(mc,z=get.Pae,arrows=FALSE,cuts=10,xrange=c(0,20),main="Collusion",
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=TRUE)
+                  
+  state.levelplot(mon,z=get.Pae,arrows=FALSE,cuts=10,xrange=c(0,20),main="Monopoly",
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=TRUE)
+                  
+  state.levelplot(mfb,z=get.Pae,arrows=!FALSE,cuts=10,xrange=c(0,20),main="First Best",
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=TRUE)
+  
+  nm = 21
+  eta.seq = seq(0.1,0.9,length=nm)
+  #gamma.seq = c(0.1,0.3)
+  delta = 0.8
+  mmc = solve.multi.model(m=mc,delta = delta,par = list(eta=eta.seq))
+  mmon = solve.multi.model(m=mon,delta = delta,par = list(eta=eta.seq))
+  mmfb = solve.multi.model(m=mfb,delta = delta,par = list(eta=eta.seq))
+  
+  mmlist = list(c=mmc,m=mmon,fb=mmfb)
+  
+  # Also discount with eta
+  
+  
+  
+  
+  for (imm in 1:3) {
+    for (im in 1:nm) {
+      eta = eta.seq[im]
+      m = mmlist[[imm]]$ms[[im]]
+      adprob = get.average.discounted.prob(m=m,delta=(1-eta)*delta)
+      m$extra.sol = adprob %*% m$extra.sol.current
+      #m$extra.sol = m$extra.sol.current *10
+      cols = 1:(NCOL(m$sol.mat)-NCOL(m$extra.sol))
+      m$sol.mat[,-cols] = m$extra.sol
+    }
+    update.multimod.sol(mmlist[[imm]])
+  }
+  
+  cols = -(1:3)
+  colnames(mmc$sol)[cols]  = paste(colnames(mmc$sol[,cols]),".c",sep="")
+  colnames(mmon$sol)[cols]= paste(colnames(mmon$sol[,cols]),".m",sep="")
+  colnames(mmfb$sol)[cols] = paste(colnames(mmfb$sol[,cols]),".fb",sep="")
+  
+  
+  mm = clone(mmc)
+  sol = cbind(mmc$sol,mmon$sol,mmfb$sol)
+  mm$sol = sol
+  
+  par(mar=c(5,2,1,1))
+  xv = c(10,10)
+  mat = sol[sol[,"x"]==xv.to.x(mm$ms[[1]],xv),]
+  yvar="W"
+  yvars = paste(yvar,c("fb","c","m"),sep=".")
+  plot.multi.lines(mat,xvar="par",yvar=yvars,ylab="",xlab="Probability that crisis ends",
+   yname=c("Social Planner","Collusion","Monopoly"),col=c("green","blue","red"),
+   legend.pos = "topleft",legend.title="Welfare",lwd=2)
+   
+  
+  
+  
+  
+  print.sol(mm,order="x")
+  
+  STORE_OBJECTS=TRUE
+  plot.multi.model(mm,y="U",type="p",xv=c(10,10))
+  
+  
+  mlist = list()
+  Rprof(tmp <- "profile.out", memory.profiling=FALSE)
+  for (b in 1:nm) {
+    gamma = gamma.seq[b] # Global environment will be searched for gamma
+    set.g.and.tau(m,g.fun=funs$g.fun) # Update stage game payoffs
+    m$name = paste("Gamma",round(gamma,3))
+    mlist[[b]] = solve.game(m,delta=delta)
+  }
 }
-
-cols = -(1:3)
-colnames(mmc$sol)[cols]  = paste(colnames(mmc$sol[,cols]),".c",sep="")
-colnames(mmon$sol)[cols]= paste(colnames(mmon$sol[,cols]),".m",sep="")
-colnames(mmfb$sol)[cols] = paste(colnames(mmfb$sol[,cols]),".fb",sep="")
-
-
-mm = clone(mmc)
-sol = cbind(mmc$sol,mmon$sol,mmfb$sol)
-mm$sol = sol
-
-par(mar=c(5,2,1,1))
-xv = c(10,10)
-mat = sol[sol[,"x"]==xv.to.x(mm$ms[[1]],xv),]
-yvar="W"
-yvars = paste(yvar,c("fb","c","m"),sep=".")
-plot.multi.lines(mat,xvar="par",yvar=yvars,ylab="",xlab="Probability that crisis ends",
- yname=c("Social Planner","Collusion","Monopoly"),col=c("green","blue","red"),
- legend.pos = "topleft",legend.title="Welfare",lwd=2)
- 
-
-
-
-
-print.sol(mm,order="x")
-
-STORE_OBJECTS=TRUE
-plot.multi.model(mm,y="U",type="p",xv=c(10,10))
-
-
-mlist = list()
-Rprof(tmp <- "profile.out", memory.profiling=FALSE)
-for (b in 1:nm) {
-  gamma = gamma.seq[b] # Global environment will be searched for gamma
-  set.g.and.tau(m,g.fun=funs$g.fun) # Update stage game payoffs
-  m$name = paste("Gamma",round(gamma,3))
-  mlist[[b]] = solve.game(m,delta=delta)
-}
-
+  

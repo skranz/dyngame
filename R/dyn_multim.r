@@ -7,8 +7,8 @@ get.sol.from.model.list = function(mlist) {
 
 # Cannot yet change delta!
 solve.multi.model = function(m,delta=m$delta,par = NULL,g.fun=m$g.fun,tau.fun=m$tau.fun) {
-  store.objects()
-  #restore.objects("solve.multi.model")
+ 
+  restore.point("solve.multi.model")
   type=""
   if (length(delta)>1) {
     nm = length(delta)

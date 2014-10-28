@@ -23,8 +23,8 @@ aps.pm.decompose.vi = function(m,voi,i=1, g.replies=m$g[m$replies[[i]],i]) {
 
 aps.pm.solve.outer = function(m,eps=10^(-6),max.iter = 1000,Uo=NULL,vo=NULL,
                               feasible = rep(TRUE,m$nax), return.for.imp=FALSE) {
-	store.objects("aps.pm.solve.outer")
-	#restore.objects("aps.pm.solve.outer")
+	("aps.pm.solve.outer")
+	#re("aps.pm.solve.outer")
 																
 	print("")
 	print("")
@@ -119,8 +119,8 @@ aps.pm.solve.outer = function(m,eps=10^(-6),max.iter = 1000,Uo=NULL,vo=NULL,
 
 # Calculates joint equilibrium and punishment payoffs for a given action plan and determines whether the solution is feasible
 pm.solve.action.plan = function(m,ae,ai) {
-	store.objects("pm.solve.action.plan")
-	#restore.objects("pm.solve.action.plan")
+	("pm.solve.action.plan")
+	#re("pm.solve.action.plan")
 	
 
 	U = pm.get.U.from.ae(m,ae)
@@ -158,8 +158,8 @@ pm.get.U.from.ae = function(m,ae) {
 
 imp.solve.outer = function(m,eps=10^(-4),max.iter = 1000000,Uo=NULL,vo=NULL,
 							 feasible = rep(TRUE,m$nax),opt.mat = NULL,Uin=-Inf,vin=rep(Inf,m$n),plot.freq=20) {
-	store.objects("imp.solve.outer")
-  #restore.objects("imp.solve.outer")		
+	("imp.solve.outer")
+  #re("imp.solve.outer")		
 	
 	remove.LP_PROBS()
 	# If no outer bounds are given, we first solve the problem with perfect monitoring
@@ -235,8 +235,8 @@ imp.solve.outer = function(m,eps=10^(-4),max.iter = 1000000,Uo=NULL,vo=NULL,
 	total.looked.at = 0
 	num.change.wrong = 0
 	while(TRUE) {
-		store.objects("imp.solve.outer2")
-		#restore.objects("imp.solve.outer2")		
+		("imp.solve.outer2")
+		#re("imp.solve.outer2")		
 	
 		outer.counter = outer.counter +1
 		# We may consider a more sophisticated scheme to assign the next x,k that will be decomposed
@@ -458,8 +458,8 @@ imp.solve.outer = function(m,eps=10^(-4),max.iter = 1000000,Uo=NULL,vo=NULL,
 # We only specify payments for states that can potentially be reached
 # This means if fewer states can be reached from ax, we have fewer variables and fewer constraints
 imp.make.rhs.dir.ax = function(m,ax,U,v,x=ax.to.x(m,ax),rx = get.reachable.states.from.ax.replies(m,ax)) {
-	store.objects("imp.make.rhs.dir.ax ")
-	#restore.objects("imp.make.rhs.dir.ax ")
+	("imp.make.rhs.dir.ax ")
+	#re("imp.make.rhs.dir.ax ")
 	
 	n = m$n; nx = m$nx; nax = m$nax; delta = m$delta
 	# The different lists that will describe the constraints
@@ -522,8 +522,8 @@ imp.make.rhs.dir.ax = function(m,ax,U,v,x=ax.to.x(m,ax),rx = get.reachable.state
 # We only specify payments for states that can potentially be reached
 # This means if fewer states can be reached from ax, we have fewer variables and fewer constraints
 imp.make.constr.ax = function(m,ax,U,v,x=ax.to.x(m,ax),rx = get.reachable.states.from.ax.replies(m,ax)) {
-	store.objects("imp.make.constr.ax")
-	#restore.objects("imp.make.constr.ax")
+	("imp.make.constr.ax")
+	#re("imp.make.constr.ax")
 	
 	n = m$n; nx = m$nx; nax = m$nax; delta = m$delta
 	# The different lists that will describe the constraints
@@ -648,8 +648,8 @@ imp.make.constr.ax = function(m,ax,U,v,x=ax.to.x(m,ax),rx = get.reachable.states
 }
 
 imp.make.objective.U.ax = function(m,ax,rx=get.reachable.states.from.ax.replies(m,ax)) {
-	store.objects("imp.make.objective.U.ax")
-	#restore.objects("imp.make.objective.U.ax")
+	("imp.make.objective.U.ax")
+	#re("imp.make.objective.U.ax")
 	
 	# Minimize the total expected amount of money burning
 	# This means the coefficients are given by the probabilities, we reach a particular state
@@ -659,8 +659,8 @@ imp.make.objective.U.ax = function(m,ax,rx=get.reachable.states.from.ax.replies(
 }
 
 imp.make.objective.vi.ax = function(m,ax,i=1,rx=get.reachable.states.from.ax.replies(m,ax)) {
-	store.objects("imp.make.objective.vi.ax")
-	#restore.objects("imp.make.objective.vi.ax")
+	("imp.make.objective.vi.ax")
+	#re("imp.make.objective.vi.ax")
 	
 	nrx = NROW(rx)
 	# Minimize the total expected continuation payoff for player i
@@ -672,8 +672,8 @@ imp.make.objective.vi.ax = function(m,ax,i=1,rx=get.reachable.states.from.ax.rep
 }
 
 imp.make.U.lp = function(m,ax,Uo,vo) {
-	store.objects("imp.make.U.lp")
-	#restore.objects("imp.make.U.lp")
+	("imp.make.U.lp")
+	#re("imp.make.U.lp")
 		
 	n = m$n; nx = m$nx;
 
@@ -694,8 +694,8 @@ imp.make.U.lp = function(m,ax,Uo,vo) {
 }
 
 imp.make.vi.lp = function(m,ax,i=1,Uo,vo) {
-	store.objects("imp.make.vi.lp")
-	#restore.objects("imp.make.vi.lp")
+	("imp.make.vi.lp")
+	#re("imp.make.vi.lp")
 			
 	n = m$n; nx = m$nx;
 
@@ -725,8 +725,8 @@ imp.update.U.lp = function(m,lp,ax,Uo,vo) {
 }
 
 imp.update.vi.lp = function(m,lp,ax,i=1,Uo,vo) {
-	store.objects("imp.update.vi.lp")
-	#restore.objects("imp.update.vi.lp")
+	("imp.update.vi.lp")
+	#re("imp.update.vi.lp")
 	
 	#remove.lp(lp)
 	#return(imp.make.vi.lp(m,ax,i=i,Uo,vo))
@@ -738,8 +738,8 @@ imp.update.vi.lp = function(m,lp,ax,i=1,Uo,vo) {
 
 
 imp.decompose.U.ax = function(m,ax,Uo,vo,lp=NULL,x=ax.to.x(m,ax),update.lp=TRUE, warn.if.larger=TRUE,tol.decomp = 10^(-14)) {
-	store.objects("imp.decompose.U.ax")
-	#restore.objects("imp.decompose.U.ax")
+	("imp.decompose.U.ax")
+	#re("imp.decompose.U.ax")
 	
 	# Generate or update linear program
 	if (is.null(lp)) {
@@ -774,8 +774,8 @@ imp.decompose.U.ax = function(m,ax,Uo,vo,lp=NULL,x=ax.to.x(m,ax),update.lp=TRUE,
 }
 
 imp.decompose.vi.ax = function(m,ax,i=1,Uo,vo,lp=NULL,x=ax.to.x(m,ax),update.lp=TRUE, warn.if.larger=TRUE,tol.decomp = 10^(-14)) {
-	store.objects("imp.decompose.vi.ax")
-	#restore.objects("imp.decompose.vi.ax")
+	("imp.decompose.vi.ax")
+	#re("imp.decompose.vi.ax")
 	lp = NULL
 	if (is.null(lp)) {
 		lp = imp.make.vi.lp(m,ax,i=i,Uo,vo)

@@ -200,8 +200,7 @@ make.ax.labels = function(ag,type) {
 # This can be done without changing the rest of the model structure
 set.g.and.tau = function(ag,g.fun=ag$g.fun,tau.fun=ag$tau.fun,
                         recalc.g=!is.null(g.fun),recalc.tau = !is.null(tau.fun),para=NULL) {
-  store.objects()
- 	#restore.objects("set.g.and.tau")
+ 	restore.point("set.g.and.tau")
 
 	
 	if (!recalc.g & (!recalc.tau)) {
@@ -305,8 +304,7 @@ set.g.and.tau = function(ag,g.fun=ag$g.fun,tau.fun=ag$tau.fun,
 # This will allow to solve for punishment values only once
 # We should also store permutations of ax. This allows to solve fewer action profiles on the equilibrium path
 adapt.for.symmetry = function(m) {
-  store.objects()
- 	#restore.objects("adapt.for.symmetry")
+ 	restore.point("adapt.for.symmetry")
 	
 	# OLD STUFF BELOW
 	if (!m$symmetric) {

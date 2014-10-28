@@ -9,4 +9,4 @@ Description: Solving stochastic dynamic games with transfers for public perfect 
 License: GPL >= 2.0
 Imports: Rcpp (>= 0.11.2)
 LinkingTo: Rcpp
-Depends: matrixStats, rgmpl, restorepoint, sktools
+Depends: rgmpl, restorepoint, skUtils

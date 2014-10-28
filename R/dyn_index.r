@@ -199,8 +199,8 @@ get.replies = function(m,i,ax=1:m$nax,keep.ax = TRUE) {
 }  
 
 get.union.of.replies = function(m,ax) {
-	store.objects("get.union.of.replies")
-	#restore.objects("get.union.of.replies")
+	("get.union.of.replies")
+	#re("get.union.of.replies")
 	
   repl = NULL
 	for (i in 1:m$n) {
@@ -213,8 +213,8 @@ get.union.of.replies = function(m,ax) {
 
 # states that can be possibly reached from  state x given any ax
 get.reachable.states.from.ax.replies = function(m,ax) {
-	store.objects("get.reachable.states.from.ax.replies")
-	#restore.objects("get.reachable.states.from.ax.replies")
+	("get.reachable.states.from.ax.replies")
+	#re("get.reachable.states.from.ax.replies")
 	
 	all.ax = get.union.of.replies(m,ax)
 	tau.x  = as.matrix(m$tau[all.ax,,drop=FALSE])

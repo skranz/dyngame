@@ -5,20 +5,6 @@
 
 using namespace Rcpp;
 
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP dyngame_rcpp_hello_world() {
-BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        List __result = rcpp_hello_world();
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
-END_RCPP
-}
 // C_get_from_pos
 List C_get_from_pos(Environment m, IntegerMatrix pos_k);
 RcppExport SEXP dyngame_C_get_from_pos(SEXP mSEXP, SEXP pos_kSEXP) {
@@ -29,6 +15,54 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< Environment >::type m(mSEXP );
         Rcpp::traits::input_parameter< IntegerMatrix >::type pos_k(pos_kSEXP );
         List __result = C_get_from_pos(m, pos_k);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// C_RowSums_VectorList
+NumericVector C_RowSums_VectorList(NumericVector vec, IntegerVector ncols);
+RcppExport SEXP dyngame_C_RowSums_VectorList(SEXP vecSEXP, SEXP ncolsSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< NumericVector >::type vec(vecSEXP );
+        Rcpp::traits::input_parameter< IntegerVector >::type ncols(ncolsSEXP );
+        NumericVector __result = C_RowSums_VectorList(vec, ncols);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// C_RowMaxs_VectorList
+NumericVector C_RowMaxs_VectorList(NumericVector vec, IntegerVector ncols);
+RcppExport SEXP dyngame_C_RowMaxs_VectorList(SEXP vecSEXP, SEXP ncolsSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< NumericVector >::type vec(vecSEXP );
+        Rcpp::traits::input_parameter< IntegerVector >::type ncols(ncolsSEXP );
+        NumericVector __result = C_RowMaxs_VectorList(vec, ncols);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// C_which_RowMaxs_VectorList
+IntegerVector C_which_RowMaxs_VectorList(NumericVector vec, IntegerVector ncols);
+RcppExport SEXP dyngame_C_which_RowMaxs_VectorList(SEXP vecSEXP, SEXP ncolsSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< NumericVector >::type vec(vecSEXP );
+        Rcpp::traits::input_parameter< IntegerVector >::type ncols(ncolsSEXP );
+        IntegerVector __result = C_which_RowMaxs_VectorList(vec, ncols);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

@@ -34,8 +34,7 @@ init.exo = function(m) {
 }
 
 init.exo.x = function(m,xg,x) {
-  store.objects()
-	#restore.objects("init.exo.x")
+	restore.point("init.exo.x")
 
   # Calculate static payoffs and cheating payoffs for state x
   # and the static action group

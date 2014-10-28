@@ -33,8 +33,8 @@ mywarning = function(txt) {
 }	
 
 adapt.for.multistage = function(m,delta) {
-  store.objects()
-  #restore.objects("adapt.for.multistage")
+ 
+  restore.point("adapt.for.multistage")
   
   m$g.org = m$g
   m$G.org = m$G
@@ -381,7 +381,7 @@ solve.game = function(m,delta=m$delta,tol.feasible = 1e-8) {
   #m$dist.e = get.eq.dist(m)
   reset.from.multistage(m,ms)
   print(paste("Game successfully solved for delta = ",delta))
-  ms$adprob = get.average.discounted.prob(ms)
+  ms$adprob = get.average.discounted.prob(delta=ms$delta, ax=ms$sol.mat[,"ae"], tau=m$tau)
   make.extra.sol(ms)
   #ms$sol.mat = cbind(ms$sol.mat,ms$extra.sol)
   return(ms)

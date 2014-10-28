@@ -29,10 +29,9 @@ get.x.long.run = function(m) {
 
 # Simulated probabilities
 get.average.discounted.prob = function(m=NULL,delta = m$delta,ax=m$sol.mat[,"ae"], tau = m$tau) {
-	store.objects("get.average.discounted.prob")
-	#restore.objects("get.average.discounted.prob")
+	restore.point("get.average.discounted.prob")
 																											
-  tau.e = m$tau[ax,]  
+  tau.e = tau[ax,]  
   prob = (1-delta)*solve(diag(NROW(tau.e)) - delta*tau.e)
   return(prob)
 }  
