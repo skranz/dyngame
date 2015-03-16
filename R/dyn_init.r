@@ -35,11 +35,7 @@ init.game = function(my.game=NULL,n=2, name="",
 	# Have to do this before 
 	# In order to keep assignment of parameter default values
 	copy.into.env(source=my.game, exclude="my.game")
-	print(xv.val)
-	print(xv.lab)
-	
-	
-	
+		
 	restore.point("init.game")
 
   m = new.dyngame()

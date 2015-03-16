@@ -229,7 +229,7 @@ solve.integrated = function(m,delta,tol.feasible = 1e-8) {
 
   
   
-solve.game = function(m,delta=m$delta,tol.feasible = 1e-8) {
+solve.game = function(m,delta=m$delta,tol.feasible = 1e-8, verbose = interactive(), plots=verbose) {
   
   restore.point("solve.game")
 
@@ -262,23 +262,25 @@ solve.game = function(m,delta=m$delta,tol.feasible = 1e-8) {
   iter = 0
   while(TRUE) {
     iter = iter+1
-    print("")
-    print("*************************************************************")
-    print(paste("Round",iter))
-   
+    
+    if (verbose) {
+      cat("\n")
+      cat("\n*************************************************************")
+      cat(paste("\nRound",iter))
+    }
+    
     #if (iter == 4)
     #  stop()
     
     # Calculate optimal equilibrium state actions
     # if some of the previous action profiles became infeasible
     if (infeas.k[1]) {
-      print("get.highest.joint.payoff")
+      if (verbose) {
+        print("get.highest.joint.payoff")
+      }
       ret.e = get.highest.joint.payoff(m)
       names(ret.e$ax) = m$ax.lab[ret.e$ax]
       Ue.x = ret.e$Ue
-      
-      #if (also.monopoly & iter = 1) {
-      #  ret.e.mon = ret.e
     }
     
     V.x = rep(0,m$nx)
@@ -289,8 +291,9 @@ solve.game = function(m,delta=m$delta,tol.feasible = 1e-8) {
 			# if some of the previous optimal punishment profiles were infeasible			
 			if (infeas.k[min(i+1,n.sym+1)]) {	
 				if (i==1 | (!m$symmetric)) {
-
-					print(paste("get.harshest.punishment",i))
+          if (verbose) {
+					  print(paste("get.harshest.punishment",i))
+          }
 					ret.i[[i]] = get.harshest.punishment(m,i)
 					names(ret.i[[i]]$ax) = m$ax.lab[ret.i[[i]]$ax]				
 					v1 = ret.i[[i]]$vi
@@ -354,15 +357,18 @@ solve.game = function(m,delta=m$delta,tol.feasible = 1e-8) {
       ms$sol.exists = FALSE
       return(ms)
     }
-    plot(1:m$nx,Ue.x,ylim=range(c(Ue.x,V.x)),main=paste(iter,ms$name),col="blue",pch=3)
-    points(1:m$nx,V.x,col="red")
+    if (plots) {
+      plot(1:m$nx,Ue.x,ylim=range(c(Ue.x,V.x)),main=paste(iter,ms$name),col="blue",pch=3)
+      points(1:m$nx,V.x,col="red")
+    }
   }
   
   
-  
-  plot(1:m$nx,Ue.x,ylim=range(c(Ue.x,V.x)),main=paste("*",iter,ms$name),col="blue",pch=3)
-  points(1:m$nx,V.x,col="red")
-  
+  if (plots) {
+    plot(1:m$nx,Ue.x,ylim=range(c(Ue.x,V.x)),main=paste("*",iter,ms$name),col="blue",pch=3)
+    points(1:m$nx,V.x,col="red")
+  }
+
   ax.i = vi = list()
   for (i in 1:m$n) {
 		if (i<=n.sym) {
@@ -380,7 +386,9 @@ solve.game = function(m,delta=m$delta,tol.feasible = 1e-8) {
   ms$sol.mat = mat
   #m$dist.e = get.eq.dist(m)
   reset.from.multistage(m,ms)
-  print(paste("Game successfully solved for delta = ",delta))
+
+  cat(paste("\nGame successfully solved for delta = ",delta))
+
   ms$adprob = get.average.discounted.prob(delta=ms$delta, ax=ms$sol.mat[,"ae"], tau=m$tau)
   make.extra.sol(ms)
   #ms$sol.mat = cbind(ms$sol.mat,ms$extra.sol)
