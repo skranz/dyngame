@@ -285,6 +285,8 @@ state.levelplot(mc,z=mc$sol.mat[,"v1"],arrows=FALSE,cuts=10,xrange=c(0,20),
 
 ## Monopoly solution
 
+
+```r
   # Monopoly solution
   mon = clone(mc)
   mon$integrated = TRUE
@@ -295,6 +297,8 @@ state.levelplot(mc,z=mc$sol.mat[,"v1"],arrows=FALSE,cuts=10,xrange=c(0,20),
                   main="Prices under Monopoly",zlim=c(8,20),
                   xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
                   reverse.colors=TRUE)
+```
+
                   
    
  }

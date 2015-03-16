@@ -322,8 +322,16 @@ V =<span class="st"> </span>mc$sol.mat[,<span class="st">&quot;v1&quot;</span>]+
 </div>
 <div id="monopoly-solution" class="section level2">
 <h2>Monopoly solution</h2>
-<p># Monopoly solution mon = clone(mc) mon$integrated = TRUE mon = solve.game(mon,delta=delta)</p>
-<p>par(mar=c(5,5,2,0)) state.levelplot(mon,z=mon$extra.sol.cur[,“P”],arrows=FALSE,cuts=10,xrange=c(0,20), main=“Prices under Monopoly”,zlim=c(8,20), xlab=“Oil reserves firm 1”, ylab=“Oil reserves firm 2”, reverse.colors=TRUE)</p>
+<pre class="sourceCode r"><code class="sourceCode r">  <span class="co"># Monopoly solution</span>
+  mon =<span class="st"> </span><span class="kw">clone</span>(mc)
+  mon$integrated =<span class="st"> </span><span class="ot">TRUE</span>
+  mon =<span class="st"> </span><span class="kw">solve.game</span>(mon,<span class="dt">delta=</span>delta)
+  
+  <span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">2</span>,<span class="dv">0</span>))
+  <span class="kw">state.levelplot</span>(mon,<span class="dt">z=</span>mon$extra.sol.cur[,<span class="st">&quot;P&quot;</span>],<span class="dt">arrows=</span><span class="ot">FALSE</span>,<span class="dt">cuts=</span><span class="dv">10</span>,<span class="dt">xrange=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">20</span>),
+                  <span class="dt">main=</span><span class="st">&quot;Prices under Monopoly&quot;</span>,<span class="dt">zlim=</span><span class="kw">c</span>(<span class="dv">8</span>,<span class="dv">20</span>),
+                  <span class="dt">xlab=</span><span class="st">&quot;Oil reserves firm 1&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Oil reserves firm 2&quot;</span>,
+                  <span class="dt">reverse.colors=</span><span class="ot">TRUE</span>)</code></pre>
 <p>}</p>
 </div>
 </div>
