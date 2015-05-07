@@ -11,9 +11,24 @@ for the source code files of the example.
 
 Unfortunatley, the package documentation is still not well developed.
 
-# Install packages
 
-Run the following code in your R console to install the required packages from the web.
+
+# Installation
+
+## 1. Install RTools (under Windows)
+
+If you have Windows, you first have to install [RTools](http://cran.r-project.org/bin/windows/Rtools/) to be able to compile and install the packages below. The easiest way to install Rtools is, via the installr package. Run the follwing lines in R:
+
+```r
+  install.packages("installr")
+  installr::install.Rtools()
+```
+
+If you have a Mac or Linux you can skip this first step.
+
+## 2. Install packages
+
+Run now the following code in your R console to install the required packages from the web.
 
 
 ```r
