@@ -15,21 +15,9 @@ Unfortunatley, the package documentation is still not well developed.
 
 # Installation
 
-## 1. Install RTools (under Windows)
+## 1. Installation for Mac or Linux
 
-If you have Windows, you first have to install [RTools](http://cran.r-project.org/bin/windows/Rtools/) to be able to compile and install the packages below. The easiest way to install Rtools is, via the installr package. Run the follwing lines in R:
-
-```r
-  install.packages("installr")
-  installr::install.Rtools()
-```
-
-If you have a Mac or Linux you can skip this first step.
-
-## 2. Install packages
-
-Run now the following code in your R console to install the required packages from the web.
-
+To install the required packages on a Mac or under Linux, run the following code in your R console to install the required packages from their source files on Github:
 
 ```r
 if (!require(devtools))
@@ -39,6 +27,26 @@ devtools::install_github("skranz/skUtils")
 devtools::install_github("skranz/rgmpl")
 devtools::install_github("skranz/dyngame")
 ```
+
+
+## 2. Installation under Windows
+
+The easiest way to install the packages is to install binary files of the packages, which are hosted on a website of mine: 
+
+```r
+install.packages("http://www.econfin.de/rlibs/skUtils.zip", repos=NULL,type="win.binary")
+install.packages("http://www.econfin.de/rlibs/rgmpl.zip", repos=NULL,type="win.binary")
+install.packages("http://www.econfin.de/rlibs/dyngame.zip", repos=NULL,type="win.binary")
+```
+
+Alternatively, you can also install the packages from the Github source as under Linux or Max. For this, you first have to install [RTools](http://cran.r-project.org/bin/windows/Rtools/) to be able to compile the packages. The easiest way to install Rtools is, via the installr package. Run the follwing lines in R:
+
+```r
+  install.packages("installr")
+  installr::install.Rtools()
+```
+
+Make sure that you add the RTools folder and the RTools/bin folder to your windows PATH. Ideally, the PATH should be changed automatically when you install RTools, otherwise you have to change the PATH manually. You may also have to restart Windows afterwards for the change to work. 
 
 
 # Cournot example with stochastic water reservers from the paper
