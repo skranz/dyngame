@@ -506,11 +506,13 @@ get.harshest.punishment = function(m,i, tol=1e-8) {
   v = get.full.dyn.vi(m,i,act.ax_i)$vi
   v
   old.cheat.pay = cheat.pay
+  counter = 0
   while (TRUE) {
+    counter = counter+1
     cheat.pay = get.cheating.payoffs(m,i,delta = m$delta, v=v, admiss = admiss.ax_i)
     
-    cheat.pay
-    old.cheat.pay
+    #cheat.pay
+    #old.cheat.pay
     # Stop if player i cannot improve his cheating payoff in any state
     if (approxeq(cheat.pay,old.cheat.pay,tol)) {
       break;
@@ -524,13 +526,14 @@ get.harshest.punishment = function(m,i, tol=1e-8) {
     
     old.cheat.pay = cheat.pay
     
-    cheat.pay
-    v
-    act.ax_i
+    #cheat.pay
+    #v
+    #act.ax_i
     
   }
   #print(rbind(label.ax(m,a.to.ax(m,act.a)), v))
-
+  cat("\n\nget.harshest.punishment iterations: ", counter,"\n")
+  
   # Translate ax_i to some admissible ax profile
   act.ax = m$admiss[match(act.ax_i,m$ind.ax.to.ax_i[[i]][m$admiss])] 
   return(list(vi=v,ax = act.ax))
