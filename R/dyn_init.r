@@ -29,7 +29,7 @@ new.dynsol = function(m) {
 # There are three different ways how payoffs can be initialized
 init.game = function(my.game=NULL,n=2, name="",
                      xv.val=NULL, nxv=NULL, xv.names = names(xv.val), xv.lab = xv.val, ixv = NULL,
-                     symmetric = FALSE, a.lab.sep = "|", x.lab.sep = ";", tol = 10e-8, tau.type="endo",tau.sparse=FALSE,para=list()) {
+                     symmetric = FALSE, a.lab.sep = "|", x.lab.sep = ";", tol = 10e-8, tau.type="endo",tau.sparse=FALSE,para=list(), no.labels=FALSE) {
  	
 	# Copy all variables of my.game into local environment
 	# Have to do this before 
@@ -40,7 +40,7 @@ init.game = function(my.game=NULL,n=2, name="",
 
   m = new.dyngame()
   
-	m$no.labels = NO.LABELS
+	m$no.labels = no.labels
 	
   	# Transform values
   if (!is.list(xv.val)) xv.val=list(xv.val)
@@ -62,7 +62,7 @@ init.game = function(my.game=NULL,n=2, name="",
 	if (is.null(m$xv.names))
 	  m$xv.names = paste("xv",1:m$nxv,sep="")
 		
-	if (!NO.LABELS) {	
+	if (!m$no.labels) {	
 		colnames(m$xv.mat) = m$xv.names
 	}
 	
@@ -73,7 +73,7 @@ init.game = function(my.game=NULL,n=2, name="",
       m$x.lab = paste(m$x.lab,gm[,z],sep=x.lab.sep)
   }
 	
-	if (!NO.LABELS) {
+	if (!m$no.labels) {
 		rownames(m$xv.mat) = m$x.lab
 		colnames(m$xv.mat) = names(m$xv.val) = names(m$xv.lab) = m$xv.names
   }
@@ -144,7 +144,7 @@ init.game = function(my.game=NULL,n=2, name="",
   m$x.stage = NULL
   if (!is.empty(m,"x.stage.fun")) {
     m$x.stage = m$x.stage.fun(m$xv.mat,m)
-		if (!NO.LABELS)
+		if (!m$no.labels)
 			names(m$x.stage) = m$x.lab
     m$n.stage = max(m$x.stage)
   } else {
@@ -162,7 +162,7 @@ make.ax.labels = function(ag,type) {
   
  	restore.point("make.ag.labels")
   m = ag
-  if (NO.LABELS) return();
+  if (m$no.labels) return();
   if (type=="dyn") { 
     for (ig in 1:ag$nxg) {
       xg = ag$xg[[ig]]
