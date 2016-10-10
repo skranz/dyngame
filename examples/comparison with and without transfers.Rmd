@@ -376,9 +376,6 @@ test.cournot.game = function(size = 3,delta = 0.7, just.gk=FALSE) {
   res = stop.game.solve.time(game, just.gk=just.gk)
   
   res$size = size
-  res$delta = delta
-  res$numStates = (size+1)^2
-  res$numA = sum((1:size)^2)
   res
 }
 
@@ -410,7 +407,7 @@ res
 
 The column `numA` contains the total number of action profiles summed up over all states. This seems a natural measure of the total size of a game. Here we plot the time to solve the game with transfers against this size measure:
 ```{r}
-plot(res$numA, res$gk, xlab="numA",ylab="Seconds to Solve (GK)", col="blue", type="b", lwd=2)
+plot(res$numA, res$gk, xlab="numA",ylab="Seconds to Solve (GK)", col="red", type="b", lwd=2)
 
 ```
 
@@ -477,9 +474,7 @@ test.random.game = function(size = 3,delta = 0.7, seed=123456, just.gk=FALSE) {
   set.seed(seed)
   game = random.game(delta=delta,numActions=size, numStates=size)
   res = stop.game.solve.time(game, just.gk=just.gk,seed = seed)
-  
   res$size = size
-  res$delta = delta
   res
 }
 
@@ -490,5 +485,23 @@ This speed test compares random games
 res = lapply(2:10, test.random.game, delta=0.7)
 res = bind_rows(res)
 res
+
+```
+
+The column `numA` contains the total number of action profiles summed up over all states. This seems a natural measure of the total size of a game. Here we plot the time to solve the game with transfers against this size measure:
+```{r}
+plot(res$numA, res$abs, xlab="numA",ylab="Seconds to Solve (GK)", col="blue", type="b", lwd=2)
+```
+
+We solve the game with transfers also for larger sizes...
+```{r}
+res = lapply(2:40, test.random.game, delta=0.7, just.gk=TRUE)
+res = bind_rows(res)
+as.data.frame(res)
+
+```
+
+```{r}
+plot(res$numA, res$gk, xlab="numA",ylab="Seconds to Solve (GK)", col="red", type="b", lwd=2)
 
 ```

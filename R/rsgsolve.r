@@ -212,7 +212,7 @@ stop.game.solve.time = function(game, times=1, just.gk=FALSE, use.cache=TRUE, se
       gk = proc.time()- start
       
       if (just.gk) {
-        return(data_frame(gk=gk["elapsed"], gk.has.eq = sol$sol.exists))
+        return(data_frame(delta=m$delta,gk=gk["elapsed"], gk.has.eq = sol$sol.exists,numStates = m$nx, numA=m$nax))
       }
       
       # solve without transfers
@@ -221,7 +221,7 @@ stop.game.solve.time = function(game, times=1, just.gk=FALSE, use.cache=TRUE, se
       rsg.sol = solveSG(rsg=rsg,noreturn=TRUE)
       abs = proc.time()- start
     
-      data_frame(gk=gk["elapsed"],abs=abs["elapsed"], gk.has.eq = sol$sol.exists, abs.solved = rsg.sol$solved==1)
+      data_frame(delta=m$delta,gk=gk["elapsed"],abs=abs["elapsed"], gk.has.eq = sol$sol.exists, abs.solved = rsg.sol$solved==1, numStates = m$nx, numA=m$nax)
     })
   })
   set.storing(TRUE)
