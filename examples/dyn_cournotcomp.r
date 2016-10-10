@@ -166,9 +166,9 @@ examples.cournot.reserves.game = function() {
     #inc.min=3,
     #inc.max=4,
     delta=0.85,
-    K=10,
-    x.cap=10,
-    x.inc=2,
+    K=4,
+    x.cap=4,
+    x.inc=1,
     inc.min=0,
     inc.max=2,
     inc.type=UNIF,
@@ -177,24 +177,27 @@ examples.cournot.reserves.game = function() {
   
   # init game
   my.game = cournot.reserves.game(para=para)
-  mc = init.game(my.game = my.game)
+  m = init.game(my.game = my.game)
+  # solve game
+  sol = solve.game(m)
+  head(print.sol(sol))
 
   # solve game without transfers
   library(RSGSolve)
   setwd("D:/libraries/dyngame")
-  rsg = dyngame.to.json.rsg(mc, file="cournot.json")
-  
-  rsg = loadJsonSG("cournot.json")
+  rsg = dyngame.to.json.rsg(m, file="cournot.json")
+  #rsg = loadJsonSG("cournot.json")
+  rsg.sol = NULL
   rsg.sol = solveSG(delta=rsg$delta, states=rsg$states, all.iter = TRUE)
 
     
-  # solve game
-  sol = solve.game(mc)
+  set.storing(TRUE)
+  plot.payoff.set(1, sol, rsg.sol, tight.approx = TRUE)
+  plot.payoff.set(2, sol, rsg.sol, tight.approx = TRUE)
+  plot.payoff.set(3, sol, rsg.sol, tight.approx = TRUE)
+  plot.payoff.set(4, sol, rsg.sol, tight.approx = TRUE)
   
-  # Solution table with one row per state
-  head(print.sol(sol))
-  plot.payoff.set(state=3, sol=sol, rsg.sol=rsg.sol)
-  
+
   # Analyse solution graphically
   par(mar=c(5,5,2,2))
   

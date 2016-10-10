@@ -37,7 +37,7 @@ is.empty.ListEnv = function(le,name, inherits = TRUE) {
 }
 
 "$.ListEnv" <- function (x,i) {
-  return(get(i,envir=x))
+  return(get0(i,envir=x,ifnotfound = NULL))
 }
 
 

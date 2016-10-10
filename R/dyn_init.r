@@ -49,6 +49,8 @@ init.game = function(my.game=NULL,n=2, name="",
   #Copy all local variables into m
 	copy.into.env(dest=m, exclude="my.game")
 	
+	m$integrated = isTRUE(m$integrated)
+	
   # For symmetric games certain operations only
   # have to be conducted for player 1
   
@@ -308,7 +310,7 @@ adapt.for.symmetry = function(m) {
 		m$x.sym = 1:m$nx
 		m$nx.sym = m$nx
 		m$nax.sym = m$nax
-		return;
+		return();
 	}
 		
 	
@@ -379,7 +381,7 @@ init.x.groups = function(ag) {
 	# Groups of states that may have different action profiles
   if (is.function(x.group)) {
     x.group = x.group(m$xv.mat,m)
-  } else if (length(x.group)==1) {
+  } else if (length(x.group)<=1) {
     x.group = rep(1,m$nx)
   }
 	m$x.group = x.group

@@ -26,6 +26,14 @@
 # V.x          : nx * 1; sum of punishment payoffs in state x
 
 
+print.dyngame = function(x,...) {
+  cat("\nA dynamic game:\n")
+  fields = ls(x)
+  for (field in fields) {
+    try(cat(paste0("$",field, ": ",paste0(str(x[[field]]), collapse="\n"))), silent=TRUE)
+  }
+}
+
 
 mywarning = function(txt) {
 	warning(txt)
