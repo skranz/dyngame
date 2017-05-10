@@ -250,18 +250,3 @@ state.levelplot(mc,z=V,arrows=FALSE,cuts=10,xrange=c(0,20),main="Sum of punishme
 state.levelplot(mc,z=mc$sol.mat[,"v1"],arrows=FALSE,cuts=10,xrange=c(0,20),xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",reverse.colors=!TRUE,col.scheme = "grey")
 
 ```
-
-## Monopoly solution
-
-```{r eval=FALSE}
-# Monopoly solution
-mon = clone(mc)
-mon$integrated = TRUE
-mon = solve.game(mon,delta=delta)
-
-par(mar=c(5,5,2,0))
-state.levelplot(mon,z=mon$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),main="Prices under Monopoly",zlim=c(8,20), xlab="Oil reserves firm 1", ylab="Oil reserves firm 2", reverse.colors=TRUE)
-
-```
-
-  
