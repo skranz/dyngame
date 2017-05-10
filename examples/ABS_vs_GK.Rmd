@@ -15,7 +15,9 @@ library(dplyr)
 library(R.cache)
 ```
 
-In this internal report, we numerically compare the algorithm to solve stochastic games with monetary transfers by Goldlücke and Kranz (2016) (GK) with the algorithm to solve stochastic games with just a public correlation device by Abreu, Brooks, Sanikov (2016) (ABS).
+This RMarkdown document contains the code that replicates the analysis in Section 4.4 of Goldlücke and Kranz (2016).
+
+We numerically compare the algorithm to solve stochastic games with monetary transfers by GoldlÃ¼cke and Kranz (2016) (GK) with the algorithm to solve stochastic games with just a public correlation device by Abreu, Brooks, Sanikov (2016) (ABS).
 
 The ABS algorithm is implemented in C++ library SGSolve by Ben Brooks [http://www.benjaminbrooks.net/software.shtml](http://www.benjaminbrooks.net/software.shtml), and an R interface is in the package RSGSolve [https://github.com/skranz/RSGSolve](https://github.com/skranz/RSGSolve)
 

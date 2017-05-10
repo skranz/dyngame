@@ -1,27 +1,47 @@
 ---
-title: "Solving Stochastic Games With and Without Transfers"
+title: "Replication Code for Section 4.4 in Goldlücke and Kranz (2017)"
 author: "Sebastian Kranz"
-date: "10 of October 2016"
+date: "2017-05-10"
 output: 
   html_document: 
     toc: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, error=TRUE, cache=!TRUE)
+knitr::opts_chunk$set(echo = TRUE, error=TRUE, cache=TRUE)
 library(dyngame)
 library(RSGSolve)
 library(dplyr)
 library(R.cache)
 ```
 
-In this internal report, we numerically compare the algorithm to solve stochastic games with monetary transfers by Goldl?cke and Kranz (2016) (GK) with the algorithm to solve stochastic games with just a public correlation device by Abreu, Brooks, Sanikov (2016) (ABS).
+This RMarkdown document contains the code that replicates the analysis in Section 4.4 of Goldlücke and Kranz (2017).
+
+We numerically compare the algorithm to solve stochastic games with monetary transfers by Goldlücke and Kranz (2017) (GK) with the algorithm to solve stochastic games with just a public correlation device by Abreu, Brooks, Sanikov (2016) (ABS).
 
 The ABS algorithm is implemented in C++ library SGSolve by Ben Brooks [http://www.benjaminbrooks.net/software.shtml](http://www.benjaminbrooks.net/software.shtml), and an R interface is in the package RSGSolve [https://github.com/skranz/RSGSolve](https://github.com/skranz/RSGSolve)
 
 The GK algorithm is implemented in the R package dyngame: 
 [https://github.com/skranz/dyngame](https://github.com/skranz/dyngame)
 The dyngame package also contains links to RSGSolve that easily allow to compare the equilibrium payoff sets with and without monetary transfers.
+
+## Install and Load packages
+If you have not yet installed all required R packages, first install dyngame and RSGSolve as explained on their Github sites linked above. Furthermore, we need to install the following Packages from CRAN:
+
+```{r eval=FALSE}
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("R.cache")
+```
+
+To load the installed R libraries needed to run the examples, execute the following code:
+```{r}
+library(dyngame)
+library(RSGSolve)
+library(dplyr)
+library(ggplot2)
+library(R.cache)
+```
 
 
 ## Two State PD Game
@@ -134,7 +154,7 @@ The following code solves the game without transfers and shows both payoff sets 
 library(RSGSolve)
 rsg = dyngame.to.rsg(m)
 rsg.sol = solveSG(rsg=rsg)
-plot.payoff.set(state=1, sol, rsg.sol, all.iter=FALSE) 
+plot.payoff.set(state=1, sol, rsg.sol) 
 ```
 
 + The blue line corresponds to the payoff set without transfers.
@@ -145,34 +165,13 @@ plot.payoff.set(state=1, sol, rsg.sol, all.iter=FALSE)
 
 + We also see that here the punishment payoffs are similar.
 
-
-### Tighten solution with transfers as starting point for games without transfers
-
-Consider the case, that we solved the game with transfers and want to use the resulting payoff set as starting point for computing the equilibrium payoff sets without transfers. (Currently this functionality is not implemented in RSGSolve, but perhaps it could.)
-
-Using the results of the game with transfers, we can even further refine the set of equilibrium payoffs that can occur in the game without transfers. The orange line shows this smaller payoff set.
-
-```{r}
-plot.payoff.set(state=1, sol, rsg.sol,tight.approx = TRUE)
-```
-
-Background: The algorithm with transfers gives us for each state a list of action profiles that can be implememented. We did solve two Markov decision process that computed the maximum payoffs for player 1 and player 2, respectively, that can be implemented with these action profiles, but without using any transfers. Such a MDP can be solved very quickly. The resulting maximum payoffs, lead here to a restriction of the payoff set. By solving MDPs that maximize some alternative weighted sum of players payoffs one can try to reduce the payoff set also in different directions.
-
-### Pivots of ABS that lie outside solution with transfers.
-
-The following plot shows also as grey points the pivot payoff pairs from all iterations of the ABS algorithm:
-```{r}
-plot.payoff.set(state=1, sol, rsg.sol,tight.approx = TRUE, all.iter=TRUE)
-```
-
-We see that many pivots lie outside the equilibrium payoff set of the game with transfers (here 58%). Indeed in any revolution there are some points outside the payoff set of GK (the points of the last revolution (in blue) are almost all inside or on the line, though).
-
-This effect could be seen in almost all examples, I looked at. As for larger games, GK runs much quicker than ABS (see below), perhaps the solution with transfers could be used as a presolver for games without transfers and possibly speed up ABS. In particular, the computation of punishment payoffs of GK may perhaps be useful to speed things up a bit. 
++ We see that many pivots lie outside the equilibrium payoff set of the game with transfers (here 57.3%). Indeed, in any revolution there are some points outside the payoff set of GK. The points of the last revolution (in blue) are almost all inside or on the line, though.
 
 ### Same critical discount factor
 
-As a note on the side: With some experimentation, it looks as if the critical discount factor to implement cooperation in both states is the same with and without transfers.
+As a note on the side: With some experimentation, it looks as if the critical discount factor to implement cooperation in both states is the same with and without transfers and around $\delta = 0.357$
 
+We first solve the game for $\delta = 0.357$. With and without transfers, we can sustain mutual cooperation in both states:
 ```{r}
 # init game
 my.game = abs.pd.game(delta=0.357)
@@ -181,12 +180,16 @@ m = init.game(my.game = my.game)
 sol = solve.game(m)
 print.sol(sol)
 
-    # solve game without transfers
+# solve game without transfers
 rsg = dyngame.to.rsg(m)
 rsg.sol = solveSG(rsg=rsg)
 
+# Plot payoff sets
 plot.payoff.set(state=1, sol, rsg.sol)
+```
 
+Now we solve both games for a slightly smaller discount factor of $\delta = 0.356$. With and without transfers only mutual defection can be implemented:
+```{r }
 # Smaller discount factor
 # init game
 my.game = abs.pd.game(delta=0.356)
@@ -195,16 +198,17 @@ m = init.game(my.game = my.game)
 sol = solve.game(m)
 print.sol(sol)
 
-    # solve game without transfers
+# solve game without transfers
 rsg = dyngame.to.rsg(m)
 rsg.sol = solveSG(rsg=rsg)
 
+# Plot payoff sets
 plot.payoff.set(state=1, sol, rsg.sol)
 
 ```
 
 
-## Speed of the algorithms
+### Speed comparison for PD Game
 
 Here is a small function that stops the time to solve a game under the GK and ABS algorithms.
 
@@ -215,8 +219,9 @@ stop.game.solve.time(game, times=3)
 
 The small two state PD game can be solved very quickly with both algorithms.
 
-### Cournot Game
+## Cournot Game
 
+This is the `dyngame` specificaton of the Cournot game with stochastic reserves described in Section 4.3 of Goldlücke and Kranz (2017). 
 ```{r}
 # type of reserve increment
 DET = 1  # deterministic reserve increment
@@ -366,142 +371,92 @@ cournot.reserves.game = function(
        x.group=x.group,
        extra.sol.fun=extra.sol.fun)
 }
+```
 
-test.cournot.game = function(size = 3,delta = 0.7, just.gk=FALSE) {
+
+### Comparing payoff sets with- and without transfers in the Cournot game
+Here we compare the payoff sets for the Cournot game
+
+```{r eval=TRUE}
+library(dyngame)
+library(RSGSolve)
+size = 5
+game = cournot.reserves.game(delta=0.7,x.cap=size,K=size,inc.min=0,inc.max=2,inc.type=UNIF)
+m = init.game(game)
+# solve game with transfers
+sol = solve.game(m)
+
+# solve game without transfers
+rsg = dyngame.to.rsg(m)
+rsg.sol = cachedEval(solveSG(rsg=rsg),key = "cournot.set5")
+
+```
+
+Plot the payoff sets:
+```{r "cournot_set_1"}
+plot.payoff.set(state=1, sol, rsg.sol,all.iter = FALSE,show.np.e = FALSE)
+```
+
+Plot a zoomed-out version, with all candidate points in all iterations of the ABS algorithm
+```{r "cournot_set_2"}
+plot.payoff.set(state=1, sol, rsg.sol, show.np.e = FALSE)
+```
+
+
+### Speed comparisons for the Cournot game  
+
+The following function helps to create and solve the Cournot game for a given size and discount factor. It stops the time to solve the game and returns the results as a data frame. The argument `times` allows to replicate the solving process multiple times to get a better estimate.
+If `use.cache`, we store and retrieve the timing information of previous runs in a cache directory. If you set a `times` arguments larger than in all previous runs, only the additional runs will be conducted. 
+```{r}
+test.cournot.game = function(size = 3,delta = 0.7, just.gk=FALSE, times=1, run.id=1:times, use.cache=TRUE) {
   restore.point("test.cournot.game")
   
+  # generate game definition with specifications
   inc.max = ceiling(size/3)
-  
   game = cournot.reserves.game(delta=delta,x.cap=size,K=size,inc.min=0,inc.max=inc.max,sol.type=COLL,inc.type=UNIF)
-  res = stop.game.solve.time(game, just.gk=just.gk)
+  
+  # solve game with and without transfers (if just.gk=FALSE)
+  # and stop the runtime
+  res = stop.game.solve.time(game, just.gk=just.gk, times=times,run.id = run.id, use.cache=use.cache)
+  
+  # combine results to a data frame res
+  if (just.gk) {
+    res = res %>% group_by(delta) %>% summarize(gk=mean(gk), runs=n(), gk.has.eq=all(gk.has.eq),numStates=first(numStates), numA = first(numA))
+  } else {
+    res = res %>% group_by(delta) %>% summarize(gk=mean(gk),abs=mean(abs), factor=abs/gk, runs=n(), gk.has.eq=all(gk.has.eq), abs.solved=sum(abs.solved), numStates=first(numStates), numA = first(numA))
+    
+  }
   
   res$size = size
   res
 }
-
-
 ```
 
-Here we compare the speed for cournot games of different sizes:
+Here we compare the solution speed for the cournot games of different sizes and both the ABS and GK algorithms:
 ```{r "cournot_speed"}
 library(dyngame)
 library(RSGSolve)
-res = lapply(2:6, test.cournot.game, delta=0.7)
+res = lapply(2:6, test.cournot.game, delta=0.7, times=3)
 res = bind_rows(res)
 res
 
 ```
+
 For larger discount factors computing the payoff sets without transfers takes considerably longer, while without transfers it becomes even faster.
 ```{r "cournot_speed2"}
-res = lapply(2:4, test.cournot.game, delta=0.9)
-res = bind_rows(res)
-res
+res = lapply(2:4, test.cournot.game, delta=0.9, times=2)
+bind_rows(res)
 ```
 
 With transfers we can solve even for a larger number of states stochastic games fairly quick. Of course the curse of dimensionality will also kick in at some point...
-```{r "cournot_speed3"}
-res = lapply(2:20, test.cournot.game, delta=0.7, just.gk=TRUE)
+```{r "cournot_speed3", eval=TRUE}
+res = lapply(2:20, test.cournot.game, delta=0.9, just.gk=TRUE, times=2)
 res = bind_rows(res)
 res
 ```
 
 The column `numA` contains the total number of action profiles summed up over all states. This seems a natural measure of the total size of a game. Here we plot the time to solve the game with transfers against this size measure:
 ```{r}
-plot(res$numA, res$gk, xlab="numA",ylab="Seconds to Solve (GK)", col="red", type="b", lwd=2)
-
-```
-
-
-
-### A Random Game
-
-The following functions specify games with random payoff matrices and random transition matrices. The number of states and the number of each players action (the same in each state) can be specified, i.e. the size of the game can differ.
-```{r pressure, echo=FALSE}
-random.game = function(delta=2/3, numStates=3, numActions=2) 
-{
-
-  # act.fun specifies the action set for a given state xv
-  # val = numerical values of actions
-  # lab = labels of actions
-  act.fun = function(xv,m=NULL) {
-    restore.point("act.fun")
-		val = list(1:numActions,1:numActions)
-    list(val=val,lab=val, i=c(1,2))
-  }
-  
-  # Stage game payoff function
-  # Specifies the stage game payoffs as a function
-  # of the action profile av and state xv
-  # The function must be vectorized, i.e. avm and xvm
-  # are matrices of action profiles and states
-  g.fun = function(avm,xvm,m=NULL) {
-    restore.point("g.fun");
-		rownames(avm)=rownames(xvm)=NULL
-		nc = 2; nr = NROW(avm)
-		g = matrix(runif(nc*nr),nr,nc)
-		g
-  }
-
-  # State transitions
-  # For a matrix of action profiles and states specifies
-  # the matrix of state transitions
-  tau.fun = function(avm,xvm,m=NULL) {
-  	#restore.point("tau.fun")
-
-		rownames(avm)=rownames(xvm)=NULL
-		nr = NROW(avm)
-		nc = numStates
-		tau = matrix(runif(nr*nc),nr,nc)
-		tau = tau / rowSums(tau)
-   	tau
-  }
-  
-  # return required information for the dynamic game
-  list(
-    n=2,
-    delta=delta,
-    #integrated = FALSE,
-    xv.val = 1:numStates,
-    act.fun=act.fun,
-    g.fun=g.fun,
-    tau.fun=tau.fun
-  )
-}
-
-test.random.game = function(size = 3,delta = 0.7, seed=123456, just.gk=FALSE) {
-  restore.point("test.random.game")
-  # init game
-  set.seed(seed)
-  game = random.game(delta=delta,numActions=size, numStates=size)
-  res = stop.game.solve.time(game, just.gk=just.gk,seed = seed)
-  res$size = size
-  res
-}
-
-```
-
-This speed test compares random games
-```{r}
-res = lapply(2:10, test.random.game, delta=0.7)
-res = bind_rows(res)
-res
-
-```
-
-The column `numA` contains the total number of action profiles summed up over all states. This seems a natural measure of the total size of a game. Here we plot the time to solve the game with transfers against this size measure:
-```{r}
-plot(res$numA, res$abs, xlab="numA",ylab="Seconds to Solve (GK)", col="blue", type="b", lwd=2)
-```
-
-We solve the game with transfers also for larger sizes...
-```{r}
-res = lapply(2:40, test.random.game, delta=0.7, just.gk=TRUE)
-res = bind_rows(res)
-as.data.frame(res)
-
-```
-
-```{r}
-plot(res$numA, res$gk, xlab="numA",ylab="Seconds to Solve (GK)", col="red", type="b", lwd=2)
-
+library(ggplot2)
+qplot(data=res, x=numA,y=gk,xlab="Total number of action profiles",ylab="Seconds to solve") + geom_line(size=1.5, color="blue") + geom_point(size=1.5, color="black") + theme_bw()
 ```

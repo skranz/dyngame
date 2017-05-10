@@ -21,10 +21,11 @@ compute.no.payments.u = function(sol, regime="e") {
   npu
 
 }
-
-plot.payoff.set = function(state = 1, sol, rsg.sol = NULL, all.iter=!is.null(rsg.sol$ipoints), tight.approx=FALSE, main=paste0("State ", state), show.np.e = !is.null(rsg.sol)) {
+plot.payoff.set = function(state = 1, sol, rsg.sol = NULL, all.iter=!is.null(rsg.sol$ipoints), tight.approx=FALSE, main=paste0("State ", state), show.np.e = !is.null(rsg.sol), type.gk="l", type.abs="o", col.gk="red", col.abs = "blue", lwd.gk=2, lwd.abs=2, lty.gk=1, lty.abs=2) {
   restore.point("plot.payoff.set")
   
+  old.par = par()
+  par(mar=c(4,4,1,1))
   np.e = compute.no.payments.u(sol,"e")
 
   G.e = sol$get.m()$g[sol$sol.mat[state,"ae"],]
@@ -46,7 +47,7 @@ plot.payoff.set = function(state = 1, sol, rsg.sol = NULL, all.iter=!is.null(rsg
     points(ipoints,col="grey",lty=2)
     rsg.sol.outside(state, sol, rsg.sol)
   }
-  points(tpoints, col="red", type="o", lwd=2)
+  points(tpoints, col=col.gk, type=type.gk, lwd=lwd.gk)
   if (isTRUE(tight.approx)) tight.approx = tighter.notransfer.payoff.set(sol)
     
   if (is.list(tight.approx)) {
@@ -54,12 +55,13 @@ plot.payoff.set = function(state = 1, sol, rsg.sol = NULL, all.iter=!is.null(rsg
     points(pset, col="orange", lwd=2, type="o")
   }
   if (!is.null(rsg.sol)) {
-    lines(rsg.sol$points[[state]], col="blue", type="o",lty=2)
+    lines(rsg.sol$points[[state]], col=col.abs,lwd=lwd.abs, type=type.abs ,lty=lty.abs)
   }
   
   if (show.np.e) {
-    points(np.e[[1]][state],np.e[[2]][state], col="red", lwd=2,cex=1.8)
+    points(np.e[[1]][state],np.e[[2]][state], col=col.gk, lwd=lwd.gk,cex=1.8)
   }
+  par(old.par)
 }
 
 rsg.sol.outside = function(state,sol, rsg.sol, cat=TRUE) {

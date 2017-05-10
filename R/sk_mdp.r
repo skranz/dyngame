@@ -5,9 +5,6 @@
 # T(s,a,s') = prob(s' | s, a)
 # R(s,a)
 
-library(matrixStats)
-
-
 
 # POLICY_ITERATION
 # [new_policy, V, Q, niters] = policy_iteration(T, R, delta, use_val_iter, old_policy)

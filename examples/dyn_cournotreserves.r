@@ -238,4 +238,89 @@ examples.cournot.reserves.game = function() {
                   
    
  }
+
+
+
+benchmark.cournot.game = function(size = 3,delta = 0.7, just.gk=FALSE) {
+  restore.point("test.cournot.game")
+  
+  inc.max = ceiling(size/3)
+  
+  game = cournot.reserves.game(delta=delta,x.cap=size,K=size,inc.min=0,inc.max=inc.max,sol.type=COLL,inc.type=UNIF)
+  res = stop.game.solve.time(game, just.gk=just.gk)
+  
+  res$size = size
+  res
+}
+
+
+# Run the inner code of this function manually
+examples.benchmark.cournot.reserves.game = function() {
+  # Turn off restore points to speed up computation
+  set.storing(FALSE)
+
+  # init game
+  my.game = cournot.reserves.game(para=para)
+  mc = init.game(my.game = my.game)
+
+  # solve game without transfers
+  library(RSGSolve)
+  setwd("D:/libraries/dyngame")
+  rsg = dyngame.to.json.rsg(mc, file="cournot.json")
+  
+  rsg = loadJsonSG("cournot.json")
+  rsg.sol = solveSG(delta=rsg$delta, states=rsg$states, all.iter = TRUE)
+
+    
+  # solve game
+  sol = solve.game(mc)
+  
+  # Solution table with one row per state
+  head(print.sol(sol))
+  plot.payoff.set(state=3, sol=sol, rsg.sol=rsg.sol)
+  
+  # Analyse solution graphically
+  par(mar=c(5,5,2,2))
+  
+  # Equilibrium prices
+  state.levelplot(mc,z=mc$extra.sol.cur[,"P"],
+                  arrows=FALSE,cuts=10,xrange=c(0,20),zlim=c(7,20),
+                  main="Prices under Collusion",
+                  xlab="Reserves firm 1", ylab="Reserves firm 2",
+                  reverse.colors=TRUE)
+  
+  state.levelplot(mc,z=mc$extra.sol.cur[,"P"],
+                  arrows=FALSE,cuts=10,xrange=c(0,20),zlim=c(8,20),
+                  main="Prices under Collusion",
+                  xlab="Reserves firm 1", ylab="Reserves firm 2",
+                  reverse.colors=TRUE,col.scheme = "grey")
+  
+  # Punishment payoffs
+  
+  V = mc$sol.mat[,"v1"]+mc$sol.mat[,"v2"]
+  state.levelplot(mc,z=V,arrows=FALSE,cuts=10,xrange=c(0,20),
+                  main="Sum of punishment payoffs",
+                  xlab="Reserves firm 1", ylab="Reserves firm 2",
+                  reverse.colors=!TRUE,col.scheme = "grey")
+                  
+  V = mc$sol.mat[,"v1"]+mc$sol.mat[,"v2"]
+  state.levelplot(mc,z=mc$sol.mat[,"v1"],arrows=FALSE,cuts=10,xrange=c(0,20),
+                  main="Punishment payoffs player 1",
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=!TRUE,col.scheme = "grey")
+                                    
+  # Monopoly solution
+  mon = clone(mc)
+  mon$integrated = TRUE
+  mon = solve.game(mon,delta=delta)
+  
+  par(mar=c(5,5,2,0))
+  state.levelplot(mon,z=mon$extra.sol.cur[,"P"],arrows=FALSE,cuts=10,xrange=c(0,20),
+                  main="Prices under Monopoly",zlim=c(8,20),
+                  xlab="Oil reserves firm 1", ylab="Oil reserves firm 2",
+                  reverse.colors=TRUE)
+                  
+   
+ }
+  
   
