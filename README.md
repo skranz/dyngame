@@ -15,9 +15,19 @@ Unfortunatley, the package documentation is still not well developed.
 
 # Installation
 
-## 1. Installation for Mac or Linux
 
-To install the required packages on a Mac or under Linux, run the following code in your R console to install the required packages from their source files on Github:
+To install the dyngame package run the following code in your R console:
+```r
+install.packages("dyngame",repos = c("https://skranz-repo.github.io/drat/",getOption("repos")))
+```
+Note that `dyngame` is not hosted on CRAN but on my own Github based repository. You therefore have to specify the `repos` argument as in the call above. 
+
+If you use Windows, binaries are available in my repository for some R version (e.g. 3.3.x and 3.5.x), but not for all. If there is no binary version available and installation fails, you also have to install RTools for Windows to compile the package from source. See
+
+[https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/)
+
+
+It is also possible to install the packages from Github and the dependencies manually from CRAN by pasting the following code (RTools will then always be necessary on Windows):
 
 ```r
 if (!require(devtools))
@@ -27,26 +37,6 @@ devtools::install_github("skranz/skUtils")
 devtools::install_github("skranz/rgmpl")
 devtools::install_github("skranz/dyngame")
 ```
-
-
-## 2. Installation under Windows
-
-The easiest way to install the packages is to install binary files of the packages, which are hosted on a website of mine: 
-
-```r
-install.packages("http://www.econfin.de/rlibs/skUtils.zip", repos=NULL,type="win.binary")
-install.packages("http://www.econfin.de/rlibs/rgmpl.zip", repos=NULL,type="win.binary")
-install.packages("http://www.econfin.de/rlibs/dyngame.zip", repos=NULL,type="win.binary")
-```
-
-Alternatively, you can also install the packages from the Github source as under Linux or Max. For this, you first have to install [RTools](http://cran.r-project.org/bin/windows/Rtools/) to be able to compile the packages. The easiest way to install Rtools is, via the installr package. Run the follwing lines in R:
-
-```r
-  install.packages("installr")
-  installr::install.Rtools()
-```
-
-Make sure that you add the RTools folder and the RTools/bin folder to your windows PATH. Ideally, the PATH should be changed automatically when you install RTools, otherwise you have to change the PATH manually. You may also have to restart Windows afterwards for the change to work. 
 
 
 # Cournot example with stochastic water reservers from the paper

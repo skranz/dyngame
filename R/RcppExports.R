@@ -2,18 +2,18 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 C_get_from_pos <- function(m, pos_k) {
-    .Call('dyngame_C_get_from_pos', PACKAGE = 'dyngame', m, pos_k)
+    .Call('_dyngame_C_get_from_pos', PACKAGE = 'dyngame', m, pos_k)
 }
 
 C_RowSums_VectorList <- function(vec, ncols) {
-    .Call('dyngame_C_RowSums_VectorList', PACKAGE = 'dyngame', vec, ncols)
+    .Call('_dyngame_C_RowSums_VectorList', PACKAGE = 'dyngame', vec, ncols)
 }
 
 C_RowMaxs_VectorList <- function(vec, ncols) {
-    .Call('dyngame_C_RowMaxs_VectorList', PACKAGE = 'dyngame', vec, ncols)
+    .Call('_dyngame_C_RowMaxs_VectorList', PACKAGE = 'dyngame', vec, ncols)
 }
 
 C_which_RowMaxs_VectorList <- function(vec, ncols) {
-    .Call('dyngame_C_which_RowMaxs_VectorList', PACKAGE = 'dyngame', vec, ncols)
+    .Call('_dyngame_C_which_RowMaxs_VectorList', PACKAGE = 'dyngame', vec, ncols)
 }
 

@@ -154,6 +154,10 @@ The following code solves the game without transfers and shows both payoff sets 
 library(RSGSolve)
 rsg = dyngame.to.rsg(m)
 rsg.sol = solveSG(rsg=rsg)
+# only final revolution
+plot.payoff.set(state=1, sol, rsg.sol,all.iter = FALSE) 
+
+# all iterations of ABS
 plot.payoff.set(state=1, sol, rsg.sol) 
 ```
 
